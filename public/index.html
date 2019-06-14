@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CALENDAR VIEWER</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CHANGE ME">
+    <meta name="keywords" content="CHANGE ME">
+    <meta name="author" content="CHANGE ME">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <div id="mainPage">
+        <h1>Calendar Viewer V1.0</h1>
+        <div class="container">
+            <h2>Status</h2>
+            <div id='statusPanel' class="panel panel-danger">
+                <div class="panel-body"></div>
+            </div>
+            <hr>
+            <container class="panelContainer">
+                <h2>File View</h2>
+                <!-- Trigger/Open The Modal -->
+                <button id="modalButton" style="display: none;" onclick="initializeModal()"></button>
+
+                <!-- The Modal -->
+                <div id="myModal" class="modal">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <p id="modalHeader"></p>
+                            <span class="close">&times;</span>
+                        </div>
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div id="modal-body">
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <col width="25%">
+                                <col width="12.5%">
+                                <col width="37.5%">
+                                <col width="12.5%">
+                                <col width="12.5%">
+                                <th>Filename</th>
+                                <th>Version</th>
+                                <th>Product ID</th>
+                                <th>Events</th>
+                                <th>Properties</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="tbl-content">
+                    <table id = "fileTable" cellpadding="0" cellspacing="0" border="0">
+                      <tbody>
+                          <col width="25%">
+                          <col width="12.5%">
+                          <col width="37.5%">
+                          <col width="12.5%">
+                          <col width="12.5%">
+                      </tbody>
+                  </table>
+              </div>
+              <form id="upload-form" method="POST" action="/upload">
+                <font size="5">Upload a file</font><br>
+                <input id="upload-file" type="file" class="hide_file" />
+                <input id="uploadFile" class="button buttonBlack" name="uploadFile" type="submit" value="Upload"/>
+            </form>
+            <hr>
+        </container>
+        <div class="container">
+            <h2>Calendar View</h2>
+            <form>
+                <div class="form-group">
+                    <label for="fileSelect">Select a file...</label>
+                    <button id="refreshButton" class="button buttonBlack">Refresh list</button>
+                    <br>
+                    <span class="select-holder">
+                        <select class="select" id="file-select">
+                            <option value="" selected disabled></option><br>
+                        </select>
+                    </span>
+                </div>
+            </form>
+            <div class="tbl-header">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <col width="10%">
+                            <col width="12.5%">
+                            <col width="15%">
+                            <col width="40%" style="text-overflow: ellipsis;">
+                            <col width="10%">
+                            <col width="10%">
+                            <th>Event#</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Summary</th>
+                            <th>Props</th>
+                            <th>Alarms</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="tbl-content">
+                <table id = "eventTable" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                        <col width="10%">
+                        <col width="12.5%">
+                        <col width="15%">
+                        <col width="40%">
+                        <col width="10%">
+                        <col width="10%">
+                    </tbody>
+                </table>
+            </div>
+            <div  class="panel panel-danger">
+                <p id="alarmPropPanel" class="panel-body">Click alarm/property cell for information</p>
+            </div>
+            <hr>
+
+            <div class="container">
+                <h2>Create</h2>
+                <div id="createButtons">
+                    <button id="createCalendarButton" class="button buttonBlack" onclick="showCalendarInputForm()">Create a calendar</button>
+                    <button id="createEventButton" class="button buttonBlack" onclick="showEventInputForm()">Add event to calendar</button>
+                </div>
+
+                <div class="container" id = "calendarInputForm" style = "display: none;">
+                    <form id='calendar-form'>
+                        <div class="form-group">
+                            <label>Filename</label>
+                            <input type="text" class="form-control" id="filenameBox" value="">
+                            <label for="startTime">Product ID</label>
+                            <input type="text" class="form-control" id="prodIDBox" value="">
+                            <label for="summary">Version</label>
+                            <input type="text" class="form-control" id="versionBox" value="">
+                            <div class=text-right>
+                                <button id = "cancelCalendarForm" class="button buttonBlack">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type='submit' class="button buttonBlack" value="Create calendar">
+                        </div>
+                    </form> 
+                </div>
+
+                <div class="container" id = "eventInputForm" style = "display: none;">
+                   <form>
+                    <div class="form-group">
+                        <label for="fileSelect">Add event to file...</label>
+                        <br>
+                        <span class="select-holder">
+                            <select class="select" id="event-select">
+                                <option value="" selected disabled></option><br>
+                            </select>
+                        </span>
+                    </div>
+                </form>
+                <form id='event-form'>
+                    <div class="form-group">
+                        <label for="startTime">UID</label>
+                        <input type="text" class="form-control" id="UIDbox" value="">
+                        <label for="startTime">Start time(24H) (YYYY/MM/DD/HH:MM)</label>
+                        <input type="text" class="form-control" id="startTimeBox" value="">
+                        <div style="margin-top: 10px;">
+                            <label for="UTC">UTC?</label>
+                            <select id='UTCselect'>
+                                <option value="" selected disabled></option><br>
+                                <option value="">yes</option>
+                                <option value="">no</option>
+                            </select>
+                        </div>
+                        <label for="summary">Summary</label>
+                        <input type="text" class="form-control" id="summaryBox" value="">
+                        <div class=text-right>
+                            <button id = 'cancelEventForm' class="button buttonBlack">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type='submit' class="button buttonBlack" value="Add event">
+                    </div>
+                </form> 
+            </div>
+            <hr>
+            <h2> Database </h2>
+            <div class="dbContainer">
+                <div id="loginPage">
+                    <h3> Login </h3>
+                    <form id='login-form'>
+                        <input type="text" class="form-control" onfocus="this.value=''" id="usernameBox" value="Username">
+                        <input type="text" class="form-control" onfocus="this.value=''" id="dbBox" value="Database name">
+                        <input type="password" class="form-control" onfocus="this.value=''" id="passwordBox"value="Password">
+                        <input type='submit' class="button buttonBlack" value="Log In">
+                    </form> 
+                    <div id='login-status-panel' class="panel panel-danger">
+                        <div class="panel-body"></div>
+                    </div>
+                </div>
+                <div id="dbPanel" style="display: none;">
+                    <h3> Database stuff</h3>
+                    <div id='db-status-panel' class="panel panel-danger">
+                        <div class="panel-body"> </div>
+                    </div>
+                    <button id="displayEvents" class="button buttonBlack">Display Events</button>
+                    <button id="displayEventsForFile" class="button buttonBlack">Display Events for a File</button>
+                    <button id="displayConflictingEvents" class="button buttonBlack">Display Conflicting Events</button><hr>
+                    <button id="storeAllFiles" class="button buttonBlack">Store all files</button>
+                    <button id="clearAllData" class="button buttonBlack">Clear all tables</button>
+                    <button id="displayDBstatus" class="button buttonBlack">Display DB Status</button>
+
+                </div>
+                <div id="viewFileEventsPanel" style="display: none;">
+                    <label>Filename</label>
+                    <select id='filenameDB'>
+                        <option value="" selected disabled></option>
+                    </select>
+                    <button id="closeFileSelect" class="button buttonBlack">Close</button>
+                </div>
+                <div id="dbEvtPanelContainer">
+                    <p id="dbEventPanel" class="panel-body"> </p>
+                    <button id="closeDBPanelButton" class="button buttonBlack">Close</button>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

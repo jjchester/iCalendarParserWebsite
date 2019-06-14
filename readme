@@ -1,0 +1,8 @@
+To run the server, enter "npm run dev 'portnum' ". To access it, enter 'localhost:portnum' into your web browser. To rebuild the parser library, enter CalendarApp/parser/ and enter 'make clean' then 'make'.
+Note that the parser is not universal. It only works with iCalendar files that met the specification given in the assignment specification. There is a folder called "Sample Calendar Files" which has 18 iCalendar files of varying complexity and length.
+Some notes on functionality: 
+Clicking on a filename cell in the File View window will open the corresponding file details in the calendar view window. 
+Clicking on the actual filename will open a hyperlink that downloads the file to wherever your default download directory is.
+In the Calendar View window, if you click on the summary/alarm/properties cells for a given event it will open a modal with expanded details of whichever cell you clicked on.
+The database connection is no longer active and will not work because the database was only available to us during the W19 semester.
+Uploading invalid files will result in the error code being displayed at the top of the page and the file not being uploaded. If an invalid file somehow appears in the uploads directory, when the page is loaded you will be given the option to remove the file.
